@@ -11,10 +11,10 @@ import java.sql.Statement;
 class DBTest { //Вначале задаю драйвер для подключения к mySQL, URL, логин и пароль, чтоб не растягивать всё в большую "портянку")
     private static final String DRIVERNAME = "com.mysql.cj.jdbc.Driver";
     private static final String TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-    private static final String URL = "jdbc:mysql://db4free.net:3306/dexautomation" + TIMEZONE;
-    //После знака вопроса в строке выше я указываю часовой пояс и его параметры, чтоб исключить все ошибки с ним.
-    private static final String USERNAME = "dexautomation";
-    private static final String PASSWORD = "dexautomation";
+
+    public static String getTIMEZONE() {
+        return TIMEZONE;
+    }
 
     void run() { //в методе run сразу описываю ВСЕ исключения для подключения)
         try { //проверка драйвера для mySQL
@@ -26,7 +26,7 @@ class DBTest { //Вначале задаю драйвер для подключ�
         }
         Connection connection;
         try { //подключаюсь к БД
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            connection = DriverManager.getConnection(DBStartButton.URL, DBStartButton.USERNAME, DBStartButton.PASSWORD);
         } catch (SQLException e) {
             System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
@@ -54,6 +54,7 @@ class DBTest { //Вначале задаю драйвер для подключ�
             System.out.println("Can't close connection");
             e.printStackTrace(); // отличается от toString() тем, что вызывает весь стек, что полезно для отладки.
         }
+
     }
 
     @Test
