@@ -39,7 +39,7 @@ class DBTest { //Вначале задаю драйвер для подключ�
             ResultSet resultSet = statement.executeQuery(sqlCommandValidation);
             boolean consistance = false;
             try {
-                while (resultSet.next()) {
+                while (resultSet.first()) {
                     int id = resultSet.getInt(1);
                     String firstName = resultSet.getString(2);
                     String lastName = resultSet.getString(3);
