@@ -1,0 +1,9 @@
+            resultSet1.getInt(1);
+            System.out.println(resultSet1.getInt(1));
+            resultSet1.absolute(1);
+            System.out.println(resultSet1.getInt(1));
+
+            String sqlCommandMaxId = "SELECT MAX(id) AS id FROM Students";
+            statement.executeQuery(sqlSomeCommand); // выполнить команду
+            String sqlCommandDeleteStudent = "DELETE from dexautomation where (firstName = 'Ivan' and lastName = 'Matveev')";
+
