@@ -7,3 +7,5 @@
 *.iml
 out
 gen
+target/classes/META-INF/Candy2.kotlin_module
+Candy2.iml

@@ -30,7 +30,6 @@ public class DBTest { //Вначале задаю драйвер для подк
         } catch (SQLException e) {
             System.out.println("Can't get connection. Incorrect URL");
             e.printStackTrace();
-//            return;
         }
     }
 
