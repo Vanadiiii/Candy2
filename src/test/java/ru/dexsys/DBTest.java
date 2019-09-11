@@ -1,20 +1,23 @@
 package ru.dexsys;
 
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.sql.*;
 
-class DBTest { //Вначале задаю драйвер для подключения к mySQL, URL, логин и пароль, чтоб не растягивать всё в большую "портянку")
+public class DBTest { //Вначале задаю драйвер для подключения к mySQL, URL, логин и пароль, чтоб не растягивать всё в большую "портянку")
     private static final String DRIVERNAME = "com.mysql.cj.jdbc.Driver";
     private static final String TIMEZONE = "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     private static final String URL = "jdbc:mysql://db4free.net:3306/dexautomation" + TIMEZONE;
     private static final String USERNAME = "dexautomation";
     private static final String PASSWORD = "dexautomation";
+    private Connection connection;
 
-    @Test
-    void dbTest() { //в методе сразу описываю ВСЕ исключения для подключения)
+    @Before
+    public void init() { //в методе сразу описываю ВСЕ исключения для подключения)
         try { //проверка драйвера для mySQL
             Class.forName(DRIVERNAME);
         } catch (ClassNotFoundException e) {
@@ -22,7 +25,6 @@ class DBTest { //Вначале задаю драйвер для подключ�
             e.printStackTrace();
             return;
         }
-        Connection connection;
         try { //подключаюсь к БД
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (SQLException e) {
@@ -30,43 +32,71 @@ class DBTest { //Вначале задаю драйвер для подключ�
             e.printStackTrace();
             return;
         }
+    }
 
-//          Здесь пишутся все запросы к БД
-        try { //создаю объект Statement'а для подключения к БД, прописываю данные
-            Statement statement = connection.createStatement();
-            String sqlCommandValidation = "SELECT * from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
-
-            ResultSet resultSet = statement.executeQuery(sqlCommandValidation);
-            boolean consistance = false;
+        @Test
+        public void dbTest1() { //проверяю, есть ли я в БД вообще
             try {
-                while (resultSet.first()) {
-                    int id = resultSet.getInt(1);
-                    String firstName = resultSet.getString(2);
-                    String lastName = resultSet.getString(3);
-                    int age = resultSet.getInt(4);
-                    long phone = resultSet.getLong(5);
+                Statement statement = connection.createStatement(); //создаю объект Statement'а для подключения к БД, прописываю данные
+                String sqlCommandValidation1 = "SELECT * from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
+                ResultSet resultSet = statement.executeQuery(sqlCommandValidation1);
+
+                boolean consistence = false;
+                try {
+                    resultSet.first();
+                    int id = resultSet.getInt("id");
+                    String firstName = resultSet.getString("firstName");
+                    String lastName = resultSet.getString("lastName");
+                    int age = resultSet.getInt("age");
+                    long phone = resultSet.getLong("phone");
                     String idAnswer = "id: " + id + " ";
-                    String someAnswer =  "firstName: " + firstName + " lastName: " + lastName + " age: " + age + " phone: " + phone;
+                    String someAnswer = "firstName: " + firstName + " lastName: " + lastName + " age: " + age + " phone: " + phone;
                     String rightAnswer = "firstName: Ivan lastName: Matveev age: 24 phone: 89127684213";
                     if (someAnswer.equals(rightAnswer)) {
-                        consistance = true;
-                        System.out.println(idAnswer + someAnswer);
+                        consistence = true;
+                        System.out.print("I'm consist of that DataBase: \n" + idAnswer + someAnswer);
                     }
-                }
-                try{
-                    Assert.assertTrue(consistance);
-                }catch (AssertionError e){
+                    try {
+                        Assert.assertTrue(consistence);
+                    } catch (AssertionError e) {
+                        System.out.println("There is no me in this DataBase");
+                    }
+                } catch (NoSuchElementException e) {
                     System.out.println("There is no me in this DataBase");
                 }
-            } catch (NoSuchElementException e) {
-                System.out.println("There is no me in this DataBase");
-//                statement.execute(sqlCommandAddStudent);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } /*А здесь все запросы заканчиваются) */
+        @Test
+        public void dbTest2() { //проверяю, в единственном ли количестве моя строка
+            try {
+                Statement statement = connection.createStatement(); //создаю объект Statement'а для подключения к БД, прописываю данные
+                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
+//                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where firstName = 'Иван'";
+                ResultSet resultSet = statement.executeQuery(sqlCommandValidation2);
 
+                resultSet.first();
+                int count=resultSet.getInt(1);
+                try {
+                    Assert.assertEquals(count, 1); //любопытно... После непрошедшей проверки sout не выходит в печать)
+                    System.out.println("There is only " + count + " string with my data in this DataBase");
+                }catch (AssertionError e){
+                    switch (count){ //if было б проще, но это просто потренироваться)
+                        case 0:
+                            System.out.println("There is no me in this DataBase"); break;
+                        default:
+                            System.out.println("There are " + count + " string match in this DataBase");
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @After
+        public void tearDown() {
         try { //проверка закрытия подключения
             connection.close();
         } catch (SQLException e) {
