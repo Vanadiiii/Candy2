@@ -76,20 +76,17 @@ public class DBTest { //Вначале задаю драйвер для подк
                 String sqlCommandValidation2 = "SELECT COUNT(id) from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
 //                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where firstName = 'Иван'";
                 ResultSet resultSet = statement.executeQuery(sqlCommandValidation2);
-
                 resultSet.first();
                 int count=resultSet.getInt(1);
-                try {
-                    Assert.assertEquals(count, 1); //любопытно... После непрошедшей проверки sout не выходит в печать)
-                    System.out.println("There is only " + count + " string with my data in this DataBase");
-                }catch (AssertionError e){
-                    switch (count){ //if было б проще, но это просто потренироваться)
-                        case 0:
-                            System.out.println("There is no me in this DataBase"); break;
-                        default:
-                            System.out.println("There are " + count + " string match in this DataBase");
-                    }
+                String failMassage;
+
+                if (count == 0) {
+                    failMassage = "There is no match in this DataBase";
+                } else {
+                    failMassage = "There are " + count + " matches in this DataBase";
                 }
+                Assert.assertEquals(failMassage, 1, count);
+                System.out.println("There is only " + count + " string with my data in this DataBase");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
