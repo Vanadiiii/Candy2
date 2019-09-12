@@ -18,7 +18,7 @@ public class DBTest { //Вначале задаю драйвер для подк
 
     @Before
     public void init() { //в методе сразу описываю ВСЕ исключения для подключения)
-        try { //проверка драйвера для mySQL
+        try { //проверка драйвера для mySQL 
             Class.forName(DRIVERNAME);
         } catch (ClassNotFoundException e) {
             System.out.println("Can't get class. No driver found");
