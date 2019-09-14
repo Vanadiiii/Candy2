@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.sql.*;
+import java.util.LinkedHashSet;
 
 public class DBTest { //Вначале задаю драйвер для подключения к mySQL, URL, логин и пароль, чтоб не растягивать всё в большую "портянку")
     private static final String DRIVERNAME = "com.mysql.cj.jdbc.Driver";
@@ -16,7 +17,7 @@ public class DBTest { //Вначале задаю драйвер для подк
     private static final String PASSWORD = "dexautomation";
     private Connection connection;
 
-    @Before
+      @Before
     public void init() { //в методе сразу описываю ВСЕ исключения для подключения)
         try { //проверка драйвера для mySQL 
             Class.forName(DRIVERNAME);
@@ -33,8 +34,8 @@ public class DBTest { //Вначале задаю драйвер для подк
         }
     }
 
-        @Test
-        public void dbTest1() { //проверяю, есть ли я в БД вообще
+      @Test
+    public void dbTest1() { //проверяю, есть ли я в БД вообще
             try {
                 Statement statement = connection.createStatement(); //создаю объект Statement'а для подключения к БД, прописываю данные
                 String sqlCommandValidation1 = "SELECT * from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
@@ -68,31 +69,44 @@ public class DBTest { //Вначале задаю драйвер для подк
             }
         }
 
-        @Test
-        public void dbTest2() { //проверяю, в единственном ли количестве моя строка
+//      @Test
+    public void dbTest2() { //проверка совпадения строки (и количества совпадений)
             try {
                 Statement statement = connection.createStatement(); //создаю объект Statement'а для подключения к БД, прописываю данные
                 String sqlCommandValidation2 = "SELECT COUNT(id) from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
 //                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where firstName = 'Иван'";
-                ResultSet resultSet = statement.executeQuery(sqlCommandValidation2);
-                resultSet.first();
-                int count=resultSet.getInt(1);
-                String failMassage;
+                String sqlCommandValidation3 = "SELECT id from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
+//                String sqlCommandValidation3 = "SELECT id from Students where firstName = 'Иван'";
 
-                if (count == 0) {
-                    failMassage = "There is no match in this DataBase";
-                } else {
-                    failMassage = "There are " + count + " matches in this DataBase";
+
+                ResultSet resultSet2 = statement.executeQuery(sqlCommandValidation3);
+                LinkedHashSet<Integer> listOfNumbers = new LinkedHashSet<Integer>(20);
+
+                while (resultSet2.next()){
+                    listOfNumbers.add(resultSet2.getInt(1));
                 }
-                Assert.assertEquals(failMassage, 1, count);
-                System.out.println("There is only " + count + " string with my data in this DataBase");
+                Assert.assertTrue(listOfNumbers.size()>0);
+
+                StringBuilder stringOfNumbers = new StringBuilder(); // данный клас необходим для обновления значения строки.
+                // Не знаю, зачем, пока, но сама IDEA подсказала))
+                int count = 0;
+                for (Integer i : listOfNumbers) {
+                    stringOfNumbers.append(i.toString()).append(", ");
+                    count++;
+                }
+                String newStringOfNumbers = stringOfNumbers.substring(0, stringOfNumbers.length() - 2);//удаляю два последних лишних символа (", ")
+                if (newStringOfNumbers.length() == (1 | 2 | 3)) {
+                    System.out.println("There is 1 match in this DataBase, and my id = " + newStringOfNumbers);
+                }
+                System.out.println("There are " + count + " matches in this DataBase: on " + newStringOfNumbers + " positions");
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
-        @After
-        public void tearDown() {
+//      @After
+    public void tearDown() {
         try { //проверка закрытия подключения
             connection.close();
         } catch (SQLException e) {
