@@ -69,18 +69,18 @@ public class DBTest { //Вначале задаю драйвер для подк
             }
         }
 
-//      @Test
+      @Test
     public void dbTest2() { //проверка совпадения строки (и количества совпадений)
             try {
                 Statement statement = connection.createStatement(); //создаю объект Statement'а для подключения к БД, прописываю данные
-                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
+//                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
 //                String sqlCommandValidation2 = "SELECT COUNT(id) from Students where firstName = 'Иван'";
                 String sqlCommandValidation3 = "SELECT id from Students where (firstName = 'Ivan' and lastName = 'Matveev' and age = 24 and phone = 89127684213)";
 //                String sqlCommandValidation3 = "SELECT id from Students where firstName = 'Иван'";
 
 
                 ResultSet resultSet2 = statement.executeQuery(sqlCommandValidation3);
-                LinkedHashSet<Integer> listOfNumbers = new LinkedHashSet<Integer>(20);
+                LinkedHashSet<Integer> listOfNumbers = new LinkedHashSet<>(20);
 
                 while (resultSet2.next()){
                     listOfNumbers.add(resultSet2.getInt(1));
@@ -105,7 +105,7 @@ public class DBTest { //Вначале задаю драйвер для подк
             }
         }
 
-//      @After
+      @After
     public void tearDown() {
         try { //проверка закрытия подключения
             connection.close();
