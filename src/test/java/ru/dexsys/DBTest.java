@@ -1,9 +1,10 @@
 package ru.dexsys;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*; //играюсь с записью библиотек)
+//import org.junit.After;
+//import org.junit.Assert;
+//import org.junit.Before;
+//import org.junit.Test;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.sql.*;
