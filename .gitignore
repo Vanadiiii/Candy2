@@ -1,12 +1,2 @@
-# Created by .ignore support plugin (hsz.mobi)
-### Example user template template
-### Example user template
-
-# IntelliJ project files
-.idea
-*.iml
-out
-gen
-target/classes/META-INF/Candy2.kotlin_module
-Candy2.iml
-ru.dexsys.DBTest
+/.idea
+/target
